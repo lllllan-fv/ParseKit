@@ -6,6 +6,27 @@ import (
 	qt "github.com/frankban/quicktest"
 )
 
+type bracketedRule struct {
+	Rule               string
+	IsBracketed        bool
+	ParseBracket       []string
+	IsSquareBracketed  bool
+	parseSquareBracket []string
+}
+
+func createTestRules() []bracketedRule {
+	return []bracketedRule{
+		{"{}", true, []string{""}, false, nil},
+		{"{1}", true, []string{"1"}, false, nil},
+		{"{1,2}", true, []string{"1", "2"}, false, nil},
+		{"{1,2,}", true, []string{"1", "2", ""}, false, nil},
+		{"[]", false, nil, true, []string{""}},
+		{"[1]", false, nil, true, []string{"1"}},
+		{"[1,2]", false, nil, true, []string{"1", "2"}},
+		{"[1,2,]", false, nil, true, []string{"1", "2", ""}},
+	}
+}
+
 func TestParse(t *testing.T) {
 	c := qt.New(t)
 
@@ -15,12 +36,15 @@ func TestParse(t *testing.T) {
 func TestIsBracketed(t *testing.T) {
 	c := qt.New(t)
 
-	var strs = []string{"{}", "{1}", "{}1", "1{}", "1", "1[]", "[]1", "[1]", "[]"}
-	var isBracketeds = []bool{true, true, false, false, false, false, false, false, false}
-	var isSquareBracketeds = []bool{false, false, false, false, false, false, false, true, true}
+	for _, rule := range createTestRules() {
+		c.Assert(isBracketed(rule.Rule), qt.Equals, rule.IsBracketed)
+	}
+}
 
-	for index, str := range strs {
-		c.Assert(isBracketed(str), qt.Equals, isBracketeds[index])
-		c.Assert(isSquareBracketed(str), qt.Equals, isSquareBracketeds[index])
+func TestIsSquareBracketed(t *testing.T) {
+	c := qt.New(t)
+
+	for _, rule := range createTestRules() {
+		c.Assert(isSquareBracketed(rule.Rule), qt.Equals, rule.IsSquareBracketed)
 	}
 }
