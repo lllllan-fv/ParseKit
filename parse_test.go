@@ -33,6 +33,25 @@ func TestParse(t *testing.T) {
 	c.Assert(1, qt.Equals, 1)
 }
 
+func TestParseBracket(t *testing.T) {
+	c := qt.New(t)
+
+	for _, rule := range createTestRules() {
+		rules, _ := parseBracket(rule.Rule)
+		c.Assert(rules, qt.DeepEquals, rule.ParseBracket)
+	}
+}
+
+func TestParseSquareBracket(t *testing.T) {
+	c := qt.New(t)
+
+	for _, rule := range createTestRules() {
+		rules, _ := parseSquareBracket(rule.Rule)
+		c.Assert(rules, qt.DeepEquals, rule.parseSquareBracket)
+	}
+}
+
+
 func TestIsBracketed(t *testing.T) {
 	c := qt.New(t)
 
