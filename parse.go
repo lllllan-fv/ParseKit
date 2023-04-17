@@ -1,10 +1,31 @@
 package parsekit
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 func Parse(rule string) (ans [][]int, err error) {
 
 	return
+}
+
+func parseBracket(rule string) (rules []string, err error) {
+	if !isBracketed(rule) {
+		return nil, errors.New("rule not bracketed")
+	} else if len(rule) == 2 {
+		return nil, errors.New("rule is empty")
+	}
+	return strings.Split(rule[1:len(rule)-1], ","), nil
+}
+
+func parseSquareBracket(rule string) (rules []string, err error) {
+	if !isSquareBracketed(rule) {
+		return nil, errors.New("rule not square bracketed")
+	} else if len(rule) == 2 {
+		return nil, errors.New("rule is empty")
+	}
+	return strings.Split(rule[1:len(rule)-1], ","), nil
 }
 
 func isBracketed(str string) bool {

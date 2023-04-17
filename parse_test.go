@@ -20,7 +20,7 @@ func TestIsBracketed(t *testing.T) {
 	var isSquareBracketeds = []bool{false, false, false, false, false, false, false, true, true}
 
 	for index, str := range strs {
-		c.Assert(isBracketeds[index], qt.Equals, isBracketed(str))
-		c.Assert(isSquareBracketeds[index], qt.Equals, isSquareBracketed(str))
+		c.Assert(isBracketed(str), qt.Equals, isBracketeds[index])
+		c.Assert(isSquareBracketed(str), qt.Equals, isSquareBracketeds[index])
 	}
 }
