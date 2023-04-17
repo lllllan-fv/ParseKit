@@ -2,7 +2,6 @@ package parsekit
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cast"
@@ -21,8 +20,16 @@ func Parse(rule string) (ans [][]int, err error) {
 
 		return combine(mulAns), nil
 	} else if rules, err := parseBracket(rule); err == nil {
-		fmt.Printf("rules: %v\n", rules)
-		return nil, nil
+		var mulAns [][][]int
+		for _, rule := range rules {
+			subAns, err := Parse(rule)
+			if err != nil {
+				return nil, err
+			}
+			mulAns = append(mulAns, subAns)
+		}
+
+		return permute(mulAns), nil
 	}
 
 	i, err := cast.ToIntE(rule)
@@ -31,6 +38,34 @@ func Parse(rule string) (ans [][]int, err error) {
 	}
 
 	return [][]int{{i}}, nil
+}
+
+func permute(arrs [][][]int) (res [][]int) {
+	var vis = make([]int, len(arrs))
+	permuteDFS(arrs, 0, vis, []int{}, &res)
+	return res
+}
+
+func permuteDFS(arrs [][][]int, dep int, vis, cur []int, res *[][]int) {
+	if dep == len(arrs) {
+		var tmp = make([]int, len(cur))
+		copy(tmp, cur)
+		*res = append(*res, tmp)
+		return
+	}
+
+	for index, arr := range arrs {
+		if vis[index] == 1 {
+			continue
+		}
+		vis[index] = 1
+
+		for _, sub := range arr {
+			permuteDFS(arrs, dep+1, vis, append(cur, sub...), res)
+		}
+
+		vis[index] = 0
+	}
 }
 
 func combine(arrs [][][]int) (res [][]int) {
